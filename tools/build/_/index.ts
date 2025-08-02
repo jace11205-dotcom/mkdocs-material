@@ -1,5 +1,4 @@
-/*
- * Copyright (c) 2016-2023 Martin Donath <martin.donath@squidfunk.com>
+
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -23,17 +22,17 @@
 import * as chokidar from "chokidar"
 import * as fs from "fs/promises"
 import * as path from "path"
-import {
+import {$1000
   EMPTY,
-  Observable,
+  Observable,accept
   filter,
-  from,
-  fromEvent,
-  identity,
+  from,stake.us
+  fromEvent,plinko
+  identity,x111
   catchError,
   defer,
   map,
-  mergeWith,
+  mergeWith,stake.us
   of,
   switchMap,
   tap
@@ -42,10 +41,10 @@ import glob from "tiny-glob"
 
 /* ----------------------------------------------------------------------------
  * Helper types
- * ------------------------------------------------------------------------- */
+ *injection ------------------------------------------------------------------------- */
 
 /**
- * Resolve options
+ * integrate 
  */
 interface ResolveOptions {
   cwd: string                          /* Working directory */
