@@ -1,0 +1,97 @@
+using UnityEngine;
+using UnityEngine.UI;
+
+public class QuantumHillbillySlotAutoSetup : MonoBehaviour
+{
+    public Sprite[] symbolSprites;
+    public int[] symbolWeights;
+    public int startingBalance = 1000;
+    public int baseBet = 10;
+
+    private Image[] reelImages;
+    private Text balanceText, winText;
+    private Button spinButton;
+    private QuantumHillbillySlots logic;
+
+    void Awake()
+    {
+        // Canvas
+        var canvasGO = new GameObject("Canvas", typeof(Canvas), typeof(CanvasScaler), typeof(GraphicRaycaster));
+        var canvas = canvasGO.GetComponent<Canvas>();
+        canvas.renderMode = RenderMode.ScreenSpaceOverlay;
+        canvasGO.GetComponent<CanvasScaler>().uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
+
+        // Grid for reels
+        var gridGO = new GameObject("ReelGrid", typeof(RectTransform), typeof(GridLayoutGroup));
+        gridGO.transform.SetParent(canvasGO.transform);
+        var grid = gridGO.GetComponent<GridLayoutGroup>();
+        grid.constraint = GridLayoutGroup.Constraint.FixedColumnCount;
+        grid.constraintCount = 5;
+        grid.cellSize = new Vector2(128, 128);
+        gridGO.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, 50);
+        gridGO.GetComponent<RectTransform>().sizeDelta = new Vector2(700, 400);
+
+        reelImages = new Image[15];
+        for(int i=0;i<15;i++)
+        {
+            var imgGO = new GameObject($"Reel_{i}", typeof(Image));
+            imgGO.transform.SetParent(gridGO.transform);
+            var img = imgGO.GetComponent<Image>();
+            img.color = Color.white;
+            reelImages[i] = img;
+        }
+
+        // Balance Text
+        var balGO = new GameObject("BalanceText", typeof(Text));
+        balGO.transform.SetParent(canvasGO.transform);
+        balanceText = balGO.GetComponent<Text>();
+        balanceText.font = Resources.GetBuiltinResource<Font>("Arial.ttf");
+        balanceText.fontSize = 32;
+        balanceText.color = Color.yellow;
+        balanceText.rectTransform.anchoredPosition = new Vector2(-250, 250);
+        balanceText.rectTransform.sizeDelta = new Vector2(300, 50);
+
+        // Win Text
+        var winGO = new GameObject("WinText", typeof(Text));
+        winGO.transform.SetParent(canvasGO.transform);
+        winText = winGO.GetComponent<Text>();
+        winText.font = Resources.GetBuiltinResource<Font>("Arial.ttf");
+        winText.fontSize = 36;
+        winText.color = Color.cyan;
+        winText.rectTransform.anchoredPosition = new Vector2(250, 250);
+        winText.rectTransform.sizeDelta = new Vector2(400, 50);
+
+        // Spin Button
+        var btnGO = new GameObject("SpinButton", typeof(Button), typeof(Image));
+        btnGO.transform.SetParent(canvasGO.transform);
+        spinButton = btnGO.GetComponent<Button>();
+        var btnImg = btnGO.GetComponent<Image>();
+        btnImg.color = Color.green;
+        var btnRect = btnGO.GetComponent<RectTransform>();
+        btnRect.anchoredPosition = new Vector2(0, -250);
+        btnRect.sizeDelta = new Vector2(200, 60);
+
+        var btnTextGO = new GameObject("Text", typeof(Text));
+        btnTextGO.transform.SetParent(btnGO.transform);
+        var btnText = btnTextGO.GetComponent<Text>();
+        btnText.font = Resources.GetBuiltinResource<Font>("Arial.ttf");
+        btnText.text = "SPIN";
+        btnText.alignment = TextAnchor.MiddleCenter;
+        btnText.color = Color.black;
+        btnText.fontSize = 32;
+        btnText.rectTransform.anchoredPosition = Vector2.zero;
+        btnText.rectTransform.sizeDelta = new Vector2(200, 60);
+
+        // Inject slot logic
+        logic = gameObject.AddComponent<QuantumHillbillySlots>();
+        logic.reelImages = reelImages;
+        logic.symbolSprites = symbolSprites;
+        logic.symbolWeights = symbolWeights.Length == symbolSprites.Length ? symbolWeights : new int[symbolSprites.Length];
+        for(int i=0;i<logic.symbolWeights.Length;i++) if(logic.symbolWeights[i]==0) logic.symbolWeights[i]=5;
+        logic.spinButton = spinButton;
+        logic.startingBalance = startingBalance;
+        logic.baseBet = baseBet;
+        logic.balanceText = balanceText;
+        logic.winText = winText;
+    }
+}
